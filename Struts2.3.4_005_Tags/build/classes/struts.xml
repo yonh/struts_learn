@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true" /><!--允许静态方法访问-->
+	<constant name="struts.devMode" value="true" />
+	
+	<!-- <constant name="struts.ui.theme" value="simple"></constant> -->
+	<constant name="struts.ui.theme" value="mytheme"></constant>
+	
+	<!-- http://localhost:8080/Struts2.3.4_005_Tags/ -->
+	<package name="property" namespace="/" extends="struts-default">
+		<action name="property" class="Property">
+			<result>/property.jsp</result>
+		</action>
+	</package>
+	
+	<package name="set" namespace="/" extends="struts-default">
+		<action name="set" class="Set">
+			<result>/set.jsp</result>
+		</action>
+	</package>
+	
+	<package name="subset" namespace="/" extends="struts-default">
+		<action name="subset" class="MySubsetTagAction">
+			<result>/subset.jsp</result>
+		</action>
+	</package>
+	
+	<package name="ui" namespace="/" extends="struts-default">
+		<action name="ui" class="UI">
+			<result name="ui1">/ui1.jsp</result>
+			<result name="ui2">/ui2.jsp</result>
+			<result name="ui3">/ui3.jsp</result>
+		</action>
+		
+	</package>
+	
+</struts>

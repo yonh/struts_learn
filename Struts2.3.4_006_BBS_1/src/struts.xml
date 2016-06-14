@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	
+	<!-- 
+	
+	<package name="bbs2009_default" extends="struts-default">
+		 <global-exception-mappings>
+    		<exception-mapping result="exception_handle" exception="Exception"></exception-mapping>
+    	</global-exception-mappings>
+	</package>
+	-->
+   
+	<package name="admin" namespace="/admin" extends="struts-default">
+   
+		<action name="*_*" class="bbs.action.{1}Action" method="{2}">
+       		<result>/admin/{1}_{2}.jsp</result>
+       		<result name="input">/admin/{1}_{2}.jsp</result>
+		</action>
+    </package>
+    
+
+	<package name="front" namespace="/" extends="struts-default" >
+		<default-action-ref name="Category_list"></default-action-ref>
+		<action name="Category_list" class="bbs.action.CategoryAction" method="list">
+       		<result>/index.jsp</result>
+		</action>
+    </package>
+    
+</struts>

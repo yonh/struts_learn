@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<!-- 
+    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.devMode" value="false" />
+
+    <include file="example.xml"/>
+
+
+    <package name="default" namespace="/" extends="struts-default">
+        <default-action-ref name="index" />
+        <action name="index">
+            <result type="redirectAction">
+                <param name="actionName">HelloWorld</param>
+                <param name="namespace">/example</param>
+            </result>
+        </action>
+    </package>
+	 -->
+	 
+	
+	<constant name="struts.devMode" value="true" />
+	
+	<!-- 解决乱码问题配置 -->
+	<!-- struts2这样可以解决了,但是struts2.1.6存在bug,导致这样还不能解决,会在以后的版本修复 -->
+	<!-- <constant name="struts.i18n.encoding" value="GBK" />--><!-- 这里解决乱码在web.xml里面配置filter-class里配置2.0的就可以解决 -->
+
+	<!-- ********************Action Start************************* -->
+	<!--2012年8月16日21:33:28
+    	在地址栏输入localhost:8080/Struts2/sdf/sdf/hello实际找到的是
+    	namespace为"/"里面的action,如果这里找不到才到namespace为""里面去找
+     -->
+	<package name="default" namespace="/b" extends="struts-default">
+        <action name="hello">
+            <result>
+                /hello.jsp
+            </result>
+        </action>
+    </package>
+    <package name="default2" namespace="" extends="struts-default">
+        <action name="hello">
+            <result>
+                /hello.jsp
+            </result>
+        </action>
+        <action name="hello2">
+            <result>
+                /hello.jsp
+            </result>
+        </action>
+    </package>
+    
+    
+    <package name="default3" namespace="/" extends="struts-default">
+        <action name="hello">
+            <result>
+                /error.jsp
+            </result>
+        </action>
+        <action name="hello2">
+            <result>
+                /error.jsp
+            </result>
+        </action>
+    </package>
+    
+    <package name="ff" namespace="/a" extends="struts-default">
+        <action name="hello">
+            <result>
+                /error.jsp
+            </result>
+        </action>
+        
+        <!-- 定义自己的Action -->
+        <action name="myaction" class="MyAction">
+        	<result>
+        		/myaction.jsp
+        	</result>
+        </action>
+    </package>
+    
+     <!-- path问题 -->
+     <!-- http://localhost:8080/Struts2/path/path.action -->
+     <!-- 
+     	首先tomcat会根据url地址去找namespace为path的package,找到之后在里面找
+     	name为path的action,action在PathAction定义,根据这个类返回的值在下面寻找对应的result
+     	如返回path就返回path.jsp页面的内容
+      -->
+     <package name="path" extends="struts-default" namespace="/path">
+        <action name="path" class="PathAction">
+        	<result name="path">
+        		/path.jsp
+        	</result>
+        	<result name="i">
+        		/index.jsp
+        	</result>
+        </action>
+    </package>
+    <!-- path问题  end-->
+    
+    <!-- 调用Action中的指定方法 -->
+    <package name="method" extends="struts-default" namespace="/method">
+        <!-- http://localhost:8080/Struts2/method/m -->
+        <action name="m" class="Method" method="add"><!-- 调用action中add方法 -->
+        	<result>
+        		/method.jsp
+        	</result>
+        </action>
+        
+        <!-- http://localhost:8080/Struts2/method/m2!add  这里!add指调用这个action中的add方法-->
+        <action name="m2" class="Method"><!-- 这里我们不指定调用方法 -->
+        	<result>
+        		/method.jsp
+        	</result>
+        </action>
+    </package>
+     <!-- 调用Action中的指定方法  end-->
+    
+     <!-- 使用通配符配置 -->
+    <package name="actions" extends="struts-default" namespace="/actions">
+        <!-- http://localhost:8080/Struts2/actions.jsp -->
+        <!-- 也可以直接登录http://localhost:8080/Struts2/actions/studentadd 或 http://localhost:8080/Struts2/actions/studentdelete -->
+        <action name="student*" class="actions.Student" method="{1}"><!-- {1}对应前面的星号,假如有3个,{3}代表匹配的第3个星号 -->
+        	<result>
+        		/student{1}.jsp
+        	</result>
+        </action>
+        
+        <!-- http://localhost:8080/Struts2/actions/Teacher_add 下面通配符配置的action访问的就是这个链接-->
+        <action name="*_*" class="actions.{1}" method="{2}"><!-- {1}对应前面的星号,假如有3个,{3}代表匹配的第3个星号 -->
+        	<result>
+        		/Teacher_add.jsp
+        	</result>
+        </action>
+    </package>
+    <!-- 使用通配符配置 end-->
+    
+    <!-- action传参数  start -->
+    <package name="param" extends="struts-default" namespace="/param">
+    	<!-- 第一种方式:直接在action里面设置成员变量,接收参数值 -->
+        <!-- http://localhost:8080/Struts2/param/paramadd?name=abcdefg&age=22 -->
+        <action name="paramadd" class="param.Param" method="add">
+        	<result>
+        		/param/paramadd.jsp
+        	</result>
+        </action>
+        
+        <!-- 使用第二种方式:Domain Model方式 -->
+        <!-- http://localhost:8080/Struts2/param/paramDomainModel?user.name=abcdefgh&user.age=223 -->
+        <action name="paramDomainModel" class="param.ParamDomainModel" method="add">
+        	<result>
+        		/param/paramadd.jsp
+        	</result>
+        </action>
+        
+        <!-- 使用第三种方式:ModelDriven方式 -->
+        <!-- http://localhost:8080/Struts2/param/paramModelDriven?name=abcdefgh&age=223 -->
+        <action name="paramModelDriven" class="param.ParamModelDriven" method="add">
+        	<result>
+        		/param/paramadd.jsp
+        	</result>
+        </action>
+    </package>
+    <!-- action传参数  end -->
+    
+    <!-- action传参数乱码问题  start -->
+    <package name="chinese" extends="struts-default" namespace="/chinese">
+    	<!-- http://localhost:8080/Struts2/chinese/chinese -->
+        <action name="chinese" class="Chinese">
+        	<result>
+        		/chinese/chinese.jsp
+        	</result>
+        </action>
+        
+        
+    </package>
+    <!-- action传参数乱码问题  end -->
+    
+    <!-- 简单数据校验  start -->
+    <package name="validation" extends="struts-default" namespace="/SimpleDataValidation">
+    	<!-- http://localhost:8080/Struts2/SimpleDataValidation/inputdata.jsp -->
+        <action name="dataValidation" class="valid.SimpleDataValidation">
+        	<result>/SimpleDataValidation/succes.jsp</result>
+        	<result name="error">/SimpleDataValidation/error.jsp</result>
+        </action>
+    </package>
+    <!-- 简单数据校验  end -->
+    
+    <!-- 访问web元素  start -->
+    <package name="access" extends="struts-default" namespace="/AccessWebElement">
+    	<!-- http://localhost:8080/Struts2/AccessWebElement/access.jsp -->
+        <action name="access*" class="access.Access{1}">
+        	<result>/AccessWebElement/access{1}.jsp</result>
+        </action>
+        <action name="access">
+        	<result>/AccessWebElement/access.jsp</result>
+        </action>
+    </package>
+    <!-- 访问web元素  end -->
+    
+    <!-- ********************Action End************************* -->
+
+</struts>

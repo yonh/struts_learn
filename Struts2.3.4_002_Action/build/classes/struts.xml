@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<constant name="struts.devMode" value="true" /><!-- 开发模式 -->
+	
+	<!-- 3种形式定义自己的action，第三种常用 -->
+	<package name="default" namespace="/" extends="struts-default">
+        <!-- http://localhost:8080/Struts2.3.4_002_Action/myaction1
+        	访问这个action的时候，会去调用MyAction.A1这个类的execute方法，它返回“success”
+        	根据返回的结果来找到result
+        -->
+        <action name="myaction1" class="myaction.A1"><!--这里不写class，默认是com.opensymphony.xwork2.Action-->
+            <result name="success"><!--不配的话，默认就是success-->
+                /hello.jsp
+            </result>
+        </action>
+        
+        <!-- http://localhost:8080/Struts2.3.4_002_Action/myaction2
+        -->
+        <action name="myaction2" class="myaction.A2"><!--这里不写class，默认是com.opensymphony.xwork2.Action-->
+            <result name="success"><!--不配的话，默认就是success-->
+                /hello.jsp
+            </result>
+        </action>
+        
+        <!-- http://localhost:8080/Struts2.3.4_002_Action/myaction3
+        -->
+        <action name="myaction3" class="myaction.A3"><!--这里不写class，默认是com.opensymphony.xwork2.Action-->
+            <result name="success"><!--不配的话，默认就是success-->
+                /hello.jsp
+            </result>
+        </action>
+    </package>
+    
+    <!--  path问题
+    http://localhost:8080/Struts2.3.4_002_Action/path/path
+    首先tomcat会根据url地址去找namespace为path的package,找到之后在里面找
+    name为path的action,action在PathAction定义,根据这个类返回的值在下面寻找对应的result
+    如返回path就返回path.jsp页面的内容 -->
+	<package name="path" extends="struts-default" namespace="/path">
+		<action name="path" class="path.PathAction">
+			<result name="path">/path.jsp</result><!-- name为path，需要execute方法返回path才可以访问到这个result -->
+        </action>
+    </package>
+	
+	<!-- 调用Action中的指定方法 动态方法调用(DMI)-->
+    <package name="method" extends="struts-default" namespace="/method">
+        <!--http://localhost:8080/Struts2.3.4_002_Action/method/method-->
+        <action name="method" class="method.Method" method="m1"><!-- 调用m1方法 -->
+        	<result>/method.jsp</result>
+        </action>
+        
+       	<!--http://localhost:8080/Struts2.3.4_002_Action/method/method2!m1
+       	    这里!m1指调用这个action中的m1方法-->
+        <action name="method2" class="method.Method"><!-- 这里我们不指定调用方法 -->
+        	<result>/method.jsp</result>
+        </action>
+    </package>
+
+	<!-- 使用通配符配置 -->
+    <package name="wildcard" extends="struts-default" namespace="/wildcard">
+       	<!--http://localhost:8080/Struts2.3.4_002_Action/wildcard/wildcardm1
+       	http://localhost:8080/Struts2.3.4_002_Action/wildcard/wildcardm2 -->
+       
+      	<!--  {1}对应前面的星号的位置,假如有3个,{3}代表匹配的第3个星号 -->
+		<action name="wildcard*" class="wildcard.Test" method="{1}">
+			<result>/wildcard{1}.jsp</result>
+        </action>
+
+        <!--
+        http://localhost:8080/Struts2.3.4_002_Action/wildcard/Test_m1
+        下面通配符配置的action访问的就是这个链接 -->
+        <action name="*_*" class="wildcard.{1}" method="{2}">
+        	<result>/{1}_{2}.jsp</result>
+        </action>
+    </package>
+    
+    
+    
+    <!-- action传参数 【三种方式】 -->
+    <package name="param" extends="struts-default" namespace="/param">
+    	<!-- 第一种方式:直接在action里面设置成员变量,接收参数值 -->
+        <!-- http://localhost:8080/Struts2.3.4_002_Action/param/param?age=22&name=dfd -->
+        <action name="param" class="param.Param">
+        	<result>/param.jsp</result>
+        </action>
+        
+        <!-- 使用第二种方式:Domain Model方式
+        http://localhost:8080/Struts2.3.4_002_Action/param/paramDomainModel?user.age=22&user.name=name
+		-->
+        <action name="paramDomainModel" class="param.ParamDomainModel">
+        	<result>/param.jsp</result>
+        </action>
+        
+        <!-- 使用第三种方式:ModelDriven方式
+        http://localhost:8080/Struts2.3.4_002_Action/param/paramModelDriven?name=aaa&age=22-->
+        <action name="paramModelDriven" class="param.ParamModelDriven">
+        	<result>/param.jsp</result>
+        </action>
+    </package>
+    
+    <!-- 解决中文乱码 -->
+    <constant name="struts.i18n.encoding" value="UTF-8"></constant>
+    <package name="chinese" extends="struts-default" namespace="/chinese">
+    	<!--http://localhost:8080/Struts2.3.4_002_Action/chinese/chinese-->
+        <action name="chinese" class="chinese.Chinese">
+        	<result>/chinese.jsp</result>
+        </action>
+    </package>
+    
+    
+    <!-- 简单数据校验 -->
+    <package name="validation" extends="struts-default" namespace="/SimpleDataValidation">
+    	<!-- http://localhost:8080/Struts2.3.4_002_Action/SimpleDataValidation/inputdata.jsp -->
+        <action name="dataValidation" class="valid.SimpleDataValidation">
+        	<result>/SimpleDataValidation/succes.jsp</result>
+        	<result name="error">/SimpleDataValidation/error.jsp</result>
+        </action>
+    </package>
+    
+    
+    <!-- 访问web元素 -->
+    <package name="access" extends="struts-default" namespace="/AccessWebElement">
+    	<!-- http://localhost:8080/Struts2.3.4_002_Action/AccessWebElement/access.jsp -->
+        <action name="access*" class="access.Access{1}">
+        	<result>/AccessWebElement/access2.jsp</result>
+        </action>
+        <action name="access">
+        	<result>/AccessWebElement/access.jsp</result>
+        </action>
+    </package>
+    
+    <!-- 默认action -->
+    <package name="defaultaction" extends="struts-default" namespace="/default">
+    	<!-- http://localhost:8080/Struts2.3.4_002_Action/default/ -->
+    	
+    	<default-action-ref name="default"></default-action-ref>
+        <action name="default">
+        	<result>/hello.jsp</result>
+        </action>
+    </package>
+    
+</struts>

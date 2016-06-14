@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<constant name="struts.devMode" value="true" /><!-- 开发模式 -->
+	
+	<!-- Result Type -->
+	<package name="type" namespace="/type" extends="struts-default">
+		<!-- http://localhost:8080/Struts2.3.4_003_Result/type/ -->
+		<default-action-ref name="index"></default-action-ref>
+		
+		<action name="dispatcher"><!-- 服务器跳转 -->
+            <result type="dispatcher">
+                /type/r1.html
+            </result>
+        </action>
+		
+		<action name="redirect"><!-- 客户端跳转 -->
+            <result type="redirect">
+                /type/r1.html
+            </result>
+        </action>
+        
+        <action name="chain"><!-- 服务器跳转到action -->
+            <result type="chain">temp</result>
+        </action>
+        
+        <action name="temp">
+            <result type="dispatcher">
+                /type/r2.html
+            </result>
+        </action>
+        
+        <action name="redirectAction"><!-- 客户端跳转到action -->
+            <result type="redirectAction">temp</result>
+        </action>
+		
+		<action name="index">
+			<result>/type/index.jsp</result>
+		</action>
+	</package>
+	
+	
+	<!-- Global Result -->
+	<!-- http://localhost:8080/Struts2.3.4_003_Result/global/global -->
+	<package name="global" namespace="/global" extends="struts-default">
+		<!-- 配置一个全局的result,别的action也能访问 -->
+        <!-- 如另一个package要使用这个result,那么这个package的extends要写这个包名 -->
+        <global-results>
+			<result name="global">/global/main.jsp</result>
+		</global-results>
+		
+		<!-- http://localhost:8080/Struts2.3.4_003_Result/global/global?id=1 -->
+		<action name="global" class="Global">
+		<!-- 在Clobal.class中我们可能返回"main",但是这个action中没有name为main的result -->
+		<!--   但是我们配置了个global-result,name为main,因此,这里返回的result实际是 -->
+		<!--   global-results中的name为global的result			              -->
+            <result>/global/a.jsp</result>
+        </action>
+	</package>
+	
+	<!-- 访问另一个包的global -->
+	<!-- http://localhost:8080/Struts2.3.4_003_Result/global2/global2 -->
+	<package name="global2" namespace="/global2" extends="global">
+		<!-- 访问另一个包的global-result,需要继承那个包-->
+		<action name="global2" class="Global"></action>
+	</package>
+	
+	
+	<!-- dynamic result -->
+	<!-- http://localhost:8080/Struts2.3.4_003_Result/dynamic/dynamic.html -->
+	<package name="dynamic" namespace="/dynamic" extends="struts-default">
+		<action name="dynamic" class="Dynamic">
+			<result>${r}</result><!-- 从value stack里取出r -->
+		</action>
+	</package>
+	
+	
+	<!-- 结果集传参数-->
+	<!-- localhost:8080/Struts2.3.4_003_Result/param/param --><!-- 参数已经在action设置了,这里可以不传,也可以传 -->
+	<package name="param" namespace="/param" extends="struts-default">
+		<action name="param" class="Param">
+			<result type="redirect">/param/param.jsp?t=${t}</result>
+		</action>
+	</package>
+	
+</struts>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	
+	<constant name="struts.custom.i18n.resources" value="i18n" />
+   
+	<package name="index" namespace="/" extends="struts-default">
+		<interceptors>
+			<interceptor name="my" class="interceptor.MyInterceptor"></interceptor>
+		</interceptors>
+		
+		<!-- http://localhost:8080/Struts2.3.4_008_i18n_2/language.jsp -->
+		<action name="index" class="action.IndexAction">
+       		<result>/index.jsp</result>
+       		<interceptor-ref name="my"></interceptor-ref>
+       		<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+		
+    </package>
+    
+</struts>
